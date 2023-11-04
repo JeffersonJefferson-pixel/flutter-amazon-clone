@@ -1,3 +1,4 @@
+import 'package:amazon_clone/features/cart/services/cart_service.dart';
 import 'package:amazon_clone/features/product_details/services/product_details_services.dart';
 import 'package:amazon_clone/models/product.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
@@ -14,9 +15,14 @@ class CartProduct extends StatefulWidget {
 
 class _CartProductState extends State<CartProduct> {
   final ProductDetailsService productDetailsService = ProductDetailsService();
+  final CartService cartService = CartService();
 
   void increaseQuantity(Product product) {
     productDetailsService.addToCart(context: context, product: product);
+  }
+
+  void decreaseQuantity(Product product) {
+    cartService.removeFromCart(context: context, product: product);
   }
 
   @override
@@ -101,13 +107,16 @@ class _CartProductState extends State<CartProduct> {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: 35,
-                      height: 32,
-                      child: const Icon(
-                        Icons.remove,
-                        size: 18,
+                    InkWell(
+                      onTap: () => decreaseQuantity(product),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 35,
+                        height: 32,
+                        child: const Icon(
+                          Icons.remove,
+                          size: 18,
+                        ),
                       ),
                     ),
                     DecoratedBox(

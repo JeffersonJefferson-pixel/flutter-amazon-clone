@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:amazon_clone/constants/utils.dart';
+import 'package:amazon_clone/features/address/services/address_service.dart';
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _AddressScreenState extends State<AddressScreen> {
   final TextEditingController pincodeController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final _adddressFormKey = GlobalKey<FormState>();
+  final AddressService addressService = AddressService();
 
   String addressToBeUsed = "";
   List<PaymentItem> paymentItems = [];
@@ -52,7 +54,20 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 
-  void onGPayResult(res) {}
+  void onGPayResult(res) {
+    if (Provider.of<UserProvider>(context, listen: false)
+        .user
+        .address
+        .isEmpty) {
+      addressService.saveUserAddress(
+          context: context, address: addressToBeUsed);
+    }
+    addressService.placeOrder(
+      context: context,
+      address: addressToBeUsed,
+      totalSum: double.parse(widget.totalAmount),
+    );
+  }
 
   void payPressed(String addressFromProvider) {
     addressToBeUsed = "";
